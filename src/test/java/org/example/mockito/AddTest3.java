@@ -9,13 +9,15 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 class AddTest3 {
 
+    //Initial configuration
     @InjectMocks  //Anotacion empleada para indicar que esta clase recibira como dependencias los objetos mockeados con @Mock
     private Add add;
-
     @Mock
     private ValidNumber validNumber;
 
@@ -73,13 +75,48 @@ class AddTest3 {
 
              //Strategies for Mockito Test:
 
+//                First Form
             //Arrange ---> Parametros de actualización es decir en que condiciones queremos que se ejecute dicho Test
            //Act ---> Que metodos queremos probar
           //Assert ---> La afirmación de lo que va a ocurrir
 
+//                Second Form
          //Given ---> igual a arrange, permite inicializar los mock con su configuración
         //When ---> La actuacion o que metodo queremos probar
        //Then ---> La afirmacion de lo que va a ocurrir
+
+    //
+    @Test
+    public void patterTest(){
+        //Arrange
+        when(validNumber.check(4)).thenReturn(true);
+        when(validNumber.check(5)).thenReturn(true);
+        //Act
+        int resultado = add.add(4,5);
+        //Assert
+        assertEquals(9,resultado);
+    }
+
+    @Test
+    public void PatterBDDTest(){
+        //Given
+        given(validNumber.check(4)).willReturn(true);
+        given(validNumber.check(5)).willReturn(true);
+        //When
+        int resultado = add.add(4,5);
+        //Then
+        assertEquals(9,resultado);
+    }
+
+    @Test
+    public void argumentMatcherTest(){
+        //Given
+        given(validNumber.check(anyInt())).willReturn(true);
+        //When
+        int resultado = add.add(4,5);
+        //Then
+        assertEquals(9,resultado);
+    }
 
 
 }
