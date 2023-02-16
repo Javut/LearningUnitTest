@@ -14,11 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
+
 class AddTest3 {
 
+    //Initial configuration
     @InjectMocks  //Anotacion empleada para indicar que esta clase recibira como dependencias los objetos mockeados con @Mock
     private Add add;
-
     @Mock
     private ValidNumber validNumber;
 
@@ -84,13 +85,16 @@ class AddTest3 {
 
              //Strategies for Mockito Test:
 
+//                First Form
             //Arrange ---> Parametros de actualización es decir en que condiciones queremos que se ejecute dicho Test
            //Act ---> Que metodos queremos probar
           //Assert ---> La afirmación de lo que va a ocurrir
 
+//                Second Form
          //Given ---> igual a arrange, permite inicializar los mock con su configuración
         //When ---> La actuacion o que metodo queremos probar
        //Then ---> La afirmacion de lo que va a ocurrir
+
 
     @Test
     public void addPrintTest(){
@@ -111,10 +115,6 @@ class AddTest3 {
 
     @Test
     public void captorTest(){
-        //Given
-        given(validNumber.check(4)).willReturn(true);
-        given(validNumber.check(5)).willReturn(true);
-        //When
         add.addPrint(4,5);
         //Then
         verify(print).showMessage(captor.capture()); //Captor por medio del metodo capture permite recuperar cual es el valor que se le esta pasando
@@ -148,6 +148,23 @@ class AddTest3 {
         assertEquals(2,mockList.size());
     }
 
+
+
+/*
+        int resultado = add.add(4,5);
+        //Then
+        assertEquals(9,resultado);
+    }*/
+
+    @Test
+    public void argumentMatcherTest(){
+        //Given
+        given(validNumber.check(anyInt())).willReturn(true);
+        //When
+        int resultado = add.add(4,5);
+        //Then
+        assertEquals(9,resultado);
+    }
 
 
 
