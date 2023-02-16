@@ -2,14 +2,17 @@ package org.example.mockito;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 class AddTest3 {
 
@@ -18,6 +21,14 @@ class AddTest3 {
 
     @Mock
     private ValidNumber validNumber;
+
+    @Mock
+    private Print print;
+
+    @Captor
+    private ArgumentCaptor<Integer> captor;
+
+
 
     @BeforeEach
     public void setUp(){
@@ -80,6 +91,64 @@ class AddTest3 {
          //Given ---> igual a arrange, permite inicializar los mock con su configuración
         //When ---> La actuacion o que metodo queremos probar
        //Then ---> La afirmacion de lo que va a ocurrir
+
+    @Test
+    public void addPrintTest(){
+        //Given
+        given(validNumber.check(4)).willReturn(true);
+        //When
+        add.addPrint(4,4);
+        //Then
+        verify(validNumber,times(2)).check(4);
+        verify(validNumber, never()).check(99);
+        verify(validNumber, atLeast(1)).check(4);
+        verify(validNumber, atMost(3)).check(4);
+
+        verify(print).showMessage(8); //Verifica con que valor se esta llamando el metodo showMessage
+        verify(print, never()).showError();
+    }
+
+
+    @Test
+    public void captorTest(){
+        //Given
+        given(validNumber.check(4)).willReturn(true);
+        given(validNumber.check(5)).willReturn(true);
+        //When
+        add.addPrint(4,5);
+        //Then
+        verify(print).showMessage(captor.capture()); //Captor por medio del metodo capture permite recuperar cual es el valor que se le esta pasando
+        assertEquals(captor.getValue().intValue(), 9);
+    }
+
+    //A diferencia de un mock normal el Spy me permite obtener el valor real devuelto por un metodo en caso de no cumplirse una condición dada
+
+    @Spy
+    List<String> spyList = new ArrayList<>();
+    @Mock
+    List<String> mockList = new ArrayList<>();
+
+/*    @Test
+    public void spyTest(){
+        spyList.add("1");
+        spyList.add("2");
+        verify(spyList).add("1");
+        verify(spyList).add("2");
+        assertEquals(2,spyList.size());
+    }*/
+
+
+    @Test
+    public void mockTest(){
+        mockList.add("1");
+        mockList.add("2");
+        verify(mockList).add("1");
+        verify(mockList).add("2");
+        given(mockList.size()).willReturn(2);
+        assertEquals(2,mockList.size());
+    }
+
+
 
 
 }
